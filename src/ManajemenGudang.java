@@ -153,7 +153,7 @@ public class ManajemenGudang {
                 }
                 // Keluar dari program
                 case 0 -> {
-                    System.out.println("Anda memilih untuk keluar dari program.");
+                    System.out.println("Anda memilih untuk keluar dari aplikasi.");
                     System.out.println("Terimakasih atas waktunya.");
                     System.out.println("==================================================================================================================================");
                     loopingMenu = false; // Loop diberhentikan karena program telah selesai
@@ -312,10 +312,14 @@ public class ManajemenGudang {
             } else {
                 // Cek kategori sudah ada atau belum
                 boolean categoryExists = false;
+                boolean itemExists = false;
                 int indexCategori = -1;
                 for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
                     String namaKategori = gudang.get(indeksKategori).get(0).get(0);
                     if (namaKategori.equalsIgnoreCase(kategoriDihapus)) {
+                        if (gudang.get(indeksKategori).size() > 0) {
+                            itemExists = true;
+                        }
                         categoryExists = true;
                         indexCategori = indeksKategori;
                         break;
@@ -326,11 +330,21 @@ public class ManajemenGudang {
                     System.out.println("Maaf, kategori tidak ada, silahkan inputkan kategori yang sudah ada. Jika ingin kembali ke menu, silahkan ketik `keluar`");
                     validKategori = false;
                 } else {
-                    gudang.remove(indexCategori);
-                    System.out.println("==================================================================================================================================");
-                    System.out.println("Selamat! Anda berhasil menghapus kategori " + kategoriDihapus + "! Berikut update datanya : ");
-                    outputJustCategory(gudang);
-                    break;
+                    if (itemExists) {
+                        System.out.print("Di kategori ini terdapat barang, apakah Anda tetap ingin menghapus kategori ini(y/n) ? ");
+                        String hapusPaksa = scanner.nextLine();
+                        if (hapusPaksa.equalsIgnoreCase("y")) {
+                            gudang.remove(indexCategori);
+                            System.out.println("==================================================================================================================================");
+                            System.out.println("Selamat! Anda berhasil menghapus kategori " + kategoriDihapus + "! Berikut update datanya : ");
+                            outputJustCategory(gudang);
+                        } else {
+                            System.out.println("==================================================================================================================================");
+                            System.out.println("Selamat! Kategori " + kategoriDihapus + " tidak terhapus.");
+                        }
+                        break;
+                    }
+
                 }
             }
         }

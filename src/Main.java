@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        ManajemenGudang manajemenGudang = new ManajemenGudang();
+        Manajemen manajemenGudang = new Manajemen();
         manajemenGudang.main();
     }
 }
