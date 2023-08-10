@@ -21,7 +21,6 @@ public class Manajemen {
         public static void main() {
             // Inisialisasi struktur data untuk menyimpan informasi gudang
             List<List<List<String>>> gudang = new ArrayList<>();
-            List<String> historyStok = new ArrayList<>();
             List<List<String>> transaksi = new ArrayList<>();
 
             // Membuat data sample
