@@ -2,6 +2,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+// Class ini adalah class awal yang dibuat, sudah berhasil:) Namun, fitur bonus nya salah persepsi (Tidak memakai join)
 public class ManajemenGudang {
     // Fungsi untuk menambahkan data barang baru ke dalam ArrayList
     public static List<String> tambahBarang (String kategori, String namaBarang, String stok) {

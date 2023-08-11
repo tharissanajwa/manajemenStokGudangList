@@ -1,7 +1,6 @@
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
+// Class ini adalah class yang sudah dijoin namun fitur join nya masih salah :)
 public class Manajemen {
         // Fungsi untuk menambahkan data barang baru ke dalam ArrayList
         public static List<String> tambahBarang (String kategori, String namaBarang) {
