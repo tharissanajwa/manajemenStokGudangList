@@ -281,23 +281,28 @@ public class ManajemenSum {
 
             boolean categoryExists = categoryExisting(gudang, kategoriBaru); // Memanggil fungsi untuk mengecek apakah kategori inputan pengguna sudah ada atau belum
 
-            if (categoryExists) { // Jika kategori sudah ada, maka pengguna diminta untuk menginputkan kembali kategori baru
-                System.out.println("Maaf, kategori sudah ada, silahkan buat yang lain.");
-                validKategori = false;
-            } else {
-                gudang.add(new ArrayList<>()); // Jika kategori tidak ada, maka kategori baru akan ditambahkan
-                int indexCategori = gudang.size() - 1;
-                gudang.get(indexCategori).add(tambahBarang(kategoriBaru, null)); // Dan nama barang dikosongkan terlebih dahulu
-                System.out.println("==================================================================================================================================");
-                System.out.println("Selamat! Anda berhasil menambahkan kategori baru! Berikut update datanya : ");
-                outputJustCategory(gudang); // Menampilkan semua list kategori
-                System.out.print("Apakah Anda ingin sekalian untuk menambahkan barang baru (y/n) ? "); // Menanyakan pengguna apakah ingin menambahkan barang
-                String pilihanPengguna = scanner.nextLine();
-                if (pilihanPengguna.equalsIgnoreCase("y")) {
-                    tambahBarangBaru(scanner, gudang, transaksi); // Bila pengguna ingin menambahkan barang, maka pengguna akan diarahkan ke fungsi tambah barang baru
+            if (!kategoriBaru.equalsIgnoreCase("keluar")) {
+                if (categoryExists) { // Jika kategori sudah ada, maka pengguna diminta untuk menginputkan kembali kategori baru
+                    System.out.println("Maaf, kategori sudah ada, silahkan buat yang lain. Jika ingin kembali ke menu, silahkan ketik `keluar`");
+                    validKategori = false;
+                } else {
+                    gudang.add(new ArrayList<>()); // Jika kategori tidak ada, maka kategori baru akan ditambahkan
+                    int indexCategori = gudang.size() - 1;
+                    gudang.get(indexCategori).add(tambahBarang(kategoriBaru, null)); // Dan nama barang dikosongkan terlebih dahulu
+                    System.out.println("==================================================================================================================================");
+                    System.out.println("Selamat! Anda berhasil menambahkan kategori baru! Berikut update datanya : ");
+                    outputJustCategory(gudang); // Menampilkan semua list kategori
+                    System.out.print("Apakah Anda ingin sekalian untuk menambahkan barang baru (y/n) ? "); // Menanyakan pengguna apakah ingin menambahkan barang
+                    String pilihanPengguna = scanner.nextLine();
+                    if (pilihanPengguna.equalsIgnoreCase("y")) {
+                        tambahBarangBaru(scanner, gudang, transaksi); // Bila pengguna ingin menambahkan barang, maka pengguna akan diarahkan ke fungsi tambah barang baru
+                    }
+                    break; // Jika program berhasil, maka loop input kategori akan dihentikan
                 }
-                break; // Jika program berhasil, maka loop input kategori akan dihentikan
+            } else {
+                break;
             }
+
         }
     }
     // Fungsi untuk menghapuskan kategori
@@ -388,23 +393,27 @@ public class ManajemenSum {
                         System.out.print("Silahkan inputkan kategori baru : ");
                         String kategoriBaru = scanner.nextLine();
 
-                        boolean categoryExists = categoryExisting(gudang, kategoriBaru);
-
-                        for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                            String namaKategori = gudang.get(indeksKategori).get(0).get(0);
-                            if (namaKategori.equalsIgnoreCase(kategoriLama)) {
-                                if (categoryExists) {
-                                    System.out.println("Maaf, nama kategori sudah ada. Silahkan buat baru.");
-                                    validKategoriBaru = false;
-                                } else {
-                                    gudang.get(indeksKategori).get(0).set(0, kategoriBaru); // Merubah data di arrayList dengan mengunakan fungsi set
-                                    System.out.println("==================================================================================================================================");
-                                    System.out.println("Selamat! Anda berhasil merubah kategori " + kategoriLama + " dengan kategori " + kategoriBaru + ". Berikut update datanya : ");
-                                    System.out.printf("Kategori : %s - %d\n", kategoriBaru, indeksKategori);
-                                    // Jika semua program berhasil dilakukan, maka akan menghentikan semua looping inputan yang ada
-                                    validKategori = true;
-                                    validKategoriBaru = true;
-                                    break;
+                        if (kategoriBaru.equalsIgnoreCase("keluar")) {
+                            validKategori = true;
+                            break;
+                        } else {
+                            boolean categoryExists = categoryExisting(gudang, kategoriBaru);
+                            for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                String namaKategori = gudang.get(indeksKategori).get(0).get(0);
+                                if (namaKategori.equalsIgnoreCase(kategoriLama)) {
+                                    if (categoryExists) {
+                                        System.out.println("Maaf, nama kategori sudah ada. Silahkan buat baru. Jika ingin kembali ke menu silahkan ketik `keluar`.");
+                                        validKategoriBaru = false;
+                                    } else {
+                                        gudang.get(indeksKategori).get(0).set(0, kategoriBaru); // Merubah data di arrayList dengan mengunakan fungsi set
+                                        System.out.println("==================================================================================================================================");
+                                        System.out.println("Selamat! Anda berhasil merubah kategori " + kategoriLama + " dengan kategori " + kategoriBaru + ". Berikut update datanya : ");
+                                        System.out.printf("Kategori : %s - %d\n", kategoriBaru, indeksKategori);
+                                        // Jika semua program berhasil dilakukan, maka akan menghentikan semua looping inputan yang ada
+                                        validKategori = true;
+                                        validKategoriBaru = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -436,61 +445,70 @@ public class ManajemenSum {
         while (!barangValid) {
             System.out.print("Silahkan inputkan nama barang yang diinginkan : ");
             String tambahNamaBarang = scanner.nextLine();
-            // Cek bila barang sudah ada atau belum sesuai dengan inputan pengguna
-            boolean itemExists = false;
-            for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                    String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                    if (barangName != null) {
-                        if (barangName.equalsIgnoreCase(tambahNamaBarang)) {
-                            itemExists = true;
-                            break;
+            if (tambahNamaBarang.equalsIgnoreCase("keluar")) {
+                break;
+            } else {
+                // Cek bila barang sudah ada atau belum sesuai dengan inputan pengguna
+                boolean itemExists = false;
+                for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                    for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                        String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                        if (barangName != null) {
+                            if (barangName.equalsIgnoreCase(tambahNamaBarang)) {
+                                itemExists = true;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            // Bila barang tidak ada, maka datanya akan ditambahkan ke data set
-            if (!itemExists) {
-                boolean validStok = false;
-                while (!validStok) {
-                    System.out.print("Silahkan inputkan stok barang yang diinginkan : ");
-                    String addStokBarang = scanner.nextLine();
-                    // Cek agar inputan stok hanya berupa angka 0-9
-                    if (addStokBarang.matches("^[0-9]+$")) {
-                        // Fungsinya bila kategori tidak ada, maka akan dibuatkan kategori baru
-                        if (!categoryExists) {
-                            gudang.add(new ArrayList<>());
-                            categoryIndex = gudang.size() - 1;
-                        }
-                        // Karena sebelumnya input stok berupa string, maka untuk melakukan rumusnya harus dikonversi ke integer terlebih dahulu
-                        int tambahStokBarang = Integer.parseInt(addStokBarang);
-                        // Pengecekan agar stok tidak boleh diinputkan kurang dari 0
-                        if (tambahStokBarang > 0) {
-                            // Menambahkan barang baru pada data set
-                            gudang.get(categoryIndex).add(tambahBarang(kategoriBaru, tambahNamaBarang));
-                            // Menambahkan stok pada data set transaksi
-                            transaksi.add(tambahStok(tambahNamaBarang, String.valueOf(tambahStokBarang)));
-                            System.out.println("==================================================================================================================================");
-                            System.out.print("Selamat! Anda berhasil menambahkan data barang baru! Berikut update datanya : ");
-                            lihatStokBarang(gudang, transaksi);
-                            // Menghentikan looping karena program berhasil dilakukan
+                // Bila barang tidak ada, maka datanya akan ditambahkan ke data set
+                if (!itemExists) {
+                    boolean validStok = false;
+                    while (!validStok) {
+                        System.out.print("Silahkan inputkan stok barang yang diinginkan : ");
+                        String addStokBarang = scanner.nextLine();
+                        if (addStokBarang.equalsIgnoreCase("keluar")) {
                             barangValid = true;
                             break;
                         } else {
-                            // Menampilkan pesan kesalahan jika input stok kurang dari 0 dan bukan merupakan angka
-                            System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif!");
-                            validStok = false; // Looping kembali inputan stok karena terjadi error input
+                            // Cek agar inputan stok hanya berupa angka 0-9
+                            if (addStokBarang.matches("^[0-9]+$")) {
+                                // Karena sebelumnya input stok berupa string, maka untuk melakukan rumusnya harus dikonversi ke integer terlebih dahulu
+                                int tambahStokBarang = Integer.parseInt(addStokBarang);
+                                // Pengecekan agar stok tidak boleh diinputkan kurang dari 0
+                                if (tambahStokBarang > 0) {
+                                    // Fungsinya bila kategori tidak ada, maka akan dibuatkan kategori baru
+                                    if (!categoryExists) {
+                                        gudang.add(new ArrayList<>());
+                                        categoryIndex = gudang.size() - 1;
+                                    }
+                                    // Menambahkan barang baru pada data set
+                                    gudang.get(categoryIndex).add(tambahBarang(kategoriBaru, tambahNamaBarang));
+                                    // Menambahkan stok pada data set transaksi
+                                    transaksi.add(tambahStok(tambahNamaBarang, String.valueOf(tambahStokBarang)));
+                                    System.out.println("==================================================================================================================================");
+                                    System.out.print("Selamat! Anda berhasil menambahkan data barang baru! Berikut update datanya : ");
+                                    lihatStokBarang(gudang, transaksi);
+                                    // Menghentikan looping karena program berhasil dilakukan
+                                    barangValid = true;
+                                    break;
+                                } else {
+                                    // Menampilkan pesan kesalahan jika input stok kurang dari 0 dan bukan merupakan angka
+                                    System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Jika ingin kembali ke menu silahkan ketik `keluar`.");
+                                    validStok = false; // Looping kembali inputan stok karena terjadi error input
+                                }
+                            } else {
+                                System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Jika ingin kembali ke menu silahkan ketik `keluar`.");
+                                validStok = false;
+                            }
                         }
-                    } else {
-                        System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif!");
-                        validStok = false;
                     }
+                } else {
+                    // Menampilkan pesan kesalahan jika barang sudah ada
+                    System.out.print("Mohon maaf, barang tersebut sudah ada. Silahkan lihat stok barang yang tersedia. Dan buat nama barang baru. Jika ingin kembali ke menu silahkan ketik `keluar`.");
+                    lihatStokBarang(gudang, transaksi);
+                    barangValid = false; // Looping kembali inputan barang, karena inputan pengguna sudah ada di data set
                 }
-            } else {
-                // Menampilkan pesan kesalahan jika barang sudah ada
-                System.out.print("Mohon maaf, barang tersebut sudah ada. Silahkan lihat stok barang yang tersedia. Dan buat nama barang baru.");
-                lihatStokBarang(gudang, transaksi);
-                barangValid = false; // Looping kembali inputan barang, karena inputan pengguna sudah ada di data set
             }
         }
 
@@ -503,100 +521,115 @@ public class ManajemenSum {
         while (!validKategori) {
             System.out.print("Silahkan inputkan kategori barang yang ingin dirubah : ");
             String kategoriBaru = scanner.nextLine();
-
-            boolean categoryExists = categoryExisting(gudang, kategoriBaru);
-            // Jika kategori ada, maka program akan dilanjutkan
-            if (categoryExists) {
-                boolean validBarang = false;
-                while (!validBarang) {
-                    System.out.print("Silahkan inputkan nama barang yang diinginkan : ");
-                    String tambahNamaBarang = scanner.nextLine();
-                    // Cek bila barang sudah ada atau belum
-                    boolean itemExists = false;
-                    for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                        for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                            String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
-                            String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                            // Cek apakah nama kategori barang yang diinginkan sesuai dengan kategori inputan pengguna sebelumnya
-                            if (categoryName.equalsIgnoreCase(kategoriBaru)) {
-                                if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
-                                    itemExists = true;
-                                    break;
+            if (kategoriBaru.equalsIgnoreCase("keluar")){
+                break;
+            } else {
+                boolean categoryExists = categoryExisting(gudang, kategoriBaru);
+                // Jika kategori ada, maka program akan dilanjutkan
+                if (categoryExists) {
+                    boolean validBarang = false;
+                    while (!validBarang) {
+                        System.out.print("Silahkan inputkan nama barang yang diinginkan : ");
+                        String tambahNamaBarang = scanner.nextLine();
+                        if (tambahNamaBarang.equalsIgnoreCase("keluar")) {
+                            validKategori = true;
+                            break;
+                        } else {
+                            // Cek bila barang sudah ada atau belum
+                            boolean itemExists = false;
+                            for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                    String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
+                                    String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                    // Cek apakah nama kategori barang yang diinginkan sesuai dengan kategori inputan pengguna sebelumnya
+                                    if (categoryName.equalsIgnoreCase(kategoriBaru)) {
+                                        if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
+                                            itemExists = true;
+                                            break;
+                                        }
+                                    } else {
+                                        validBarang = false;
+                                        break;
+                                    }
                                 }
-                            } else {
-                                validBarang = false;
-                                break;
                             }
-                        }
-                    }
 
-                    // Jika barang sudah ada, maka program akan dilanjutkan
-                    if (itemExists) {
-                        boolean validStok = false;
-                        while (!validStok) {
-                            System.out.print("Silahkan inputkan jumlah stok yang ingin dikurangi : ");
-                            String kurangiStokBarang = scanner.nextLine();
-                            // Input kurangi stok harus berupa angka
-                            if (kurangiStokBarang.matches("^[0-9]+$")) {
-                                int minusStock = Integer.parseInt(kurangiStokBarang);
-                                // Input kurangi stok harus lebih dari 0
-                                if ((minusStock > 0)) {
-                                    for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                                        for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                                            String namaKategori = gudang.get(indeksKategori).get(indeksBarang).get(0);
-                                            String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                                            for (int indeksStok = 0; indeksStok < transaksi.size(); indeksStok++) {
-                                                // Mengecek agar nama barang di transaksi harus sesuai dengan nama barang di gudang
-                                                if (transaksi.get(indeksStok).get(0).equalsIgnoreCase(barangName)) {
-                                                    // Bila hasilnya sama, maka akan mengambil jumlah stok nya
-                                                    String stok = String.valueOf(sumStok(transaksi, barangName));
-                                                    // Mengecek apakah nama baarang di data set sesuai dengan inputan pengguna
-                                                    if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
-                                                        int currentStock = Integer.parseInt(stok);
-                                                        String updatedStock = String.valueOf(currentStock - minusStock);
-                                                        // Pengecekan apakah hasil pengurangan adalah bilangan positif atau negatif
-                                                        if (Integer.parseInt(updatedStock) > 0) {
-                                                            String elemenKurang = "--" + kurangiStokBarang;
-                                                            // Menambahkan data transaksi agar stpk bisa diakumulasikan oleh program
-                                                            transaksi.add(tambahStok(barangName, elemenKurang)); // Ini fungsinya untuk pencatatan history
-                                                            transaksi.add(tambahStok(barangName, "-"+kurangiStokBarang)); // Kalau ini untuk penjumlahan stok
-                                                            String stokUpdate = String.valueOf(sumStok(transaksi, barangName)); // Mengambil hasil stok paling update
-                                                            System.out.println("==================================================================================================================================");
-                                                            System.out.println("Selamat! Anda berhasil mengurangi stok barang! Berikut update datanya : ");
-                                                            System.out.println("Kategori\t\t\t\tNama Barang\t\t\t\t\t\t\t\t\t\tStok");
-                                                            System.out.printf("%s - %d\t\t\t\t%s - %d\t\t\t\t\t\t\t\t\t%s\n", namaKategori, indeksKategori, barangName, indeksBarang, stokUpdate);
-                                                            validStok = true;
-                                                            validBarang = true;
-                                                            validKategori = true;
-                                                        } else {
-                                                            // Bila hasil pengurangan adalah bilangan negatif, maka pengguna diminta untuk memasukkan angka lebih kecil
-                                                            System.out.println("Maaf, barang tidak bisa dikurangkan dengan " + minusStock + " karena menghasilkan nilai yang tidak valid. Silahkan coba angka yang lebih kecil.");
-                                                            validStok = false;
+                            // Jika barang sudah ada, maka program akan dilanjutkan
+                            if (itemExists) {
+                                boolean validStok = false;
+                                while (!validStok) {
+                                    System.out.print("Silahkan inputkan jumlah stok yang ingin dikurangi : ");
+                                    String kurangiStokBarang = scanner.nextLine();
+                                    if (kurangiStokBarang.equalsIgnoreCase("keluar")) {
+                                        validBarang = true;
+                                        validKategori = true;
+                                        break;
+                                    } else {
+                                        // Input kurangi stok harus berupa angka
+                                        if (kurangiStokBarang.matches("^[0-9]+$")) {
+                                            int minusStock = Integer.parseInt(kurangiStokBarang);
+                                            // Input kurangi stok harus lebih dari 0
+                                            if ((minusStock > 0)) {
+                                                for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                                    for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                                        String namaKategori = gudang.get(indeksKategori).get(indeksBarang).get(0);
+                                                        String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                                        for (int indeksStok = 0; indeksStok < transaksi.size(); indeksStok++) {
+                                                            // Mengecek agar nama barang di transaksi harus sesuai dengan nama barang di gudang
+                                                            if (transaksi.get(indeksStok).get(0).equalsIgnoreCase(barangName)) {
+                                                                // Bila hasilnya sama, maka akan mengambil jumlah stok nya
+                                                                String stok = String.valueOf(sumStok(transaksi, barangName));
+                                                                // Mengecek apakah nama baarang di data set sesuai dengan inputan pengguna
+                                                                if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
+                                                                    int currentStock = Integer.parseInt(stok);
+                                                                    String updatedStock = String.valueOf(currentStock - minusStock);
+                                                                    // Pengecekan apakah hasil pengurangan adalah bilangan positif atau negatif
+                                                                    if (Integer.parseInt(updatedStock) > 0) {
+                                                                        String elemenKurang = "--" + kurangiStokBarang;
+                                                                        // Menambahkan data transaksi agar stpk bisa diakumulasikan oleh program
+                                                                        transaksi.add(tambahStok(barangName, elemenKurang)); // Ini fungsinya untuk pencatatan history
+                                                                        transaksi.add(tambahStok(barangName, "-"+kurangiStokBarang)); // Kalau ini untuk penjumlahan stok
+                                                                        String stokUpdate = String.valueOf(sumStok(transaksi, barangName)); // Mengambil hasil stok paling update
+                                                                        System.out.println("==================================================================================================================================");
+                                                                        System.out.println("Selamat! Anda berhasil mengurangi stok barang! Berikut update datanya : ");
+                                                                        System.out.println("Kategori\t\t\t\tNama Barang\t\t\t\t\t\t\t\t\t\tStok");
+                                                                        System.out.printf("%s - %d\t\t\t\t%s - %d\t\t\t\t\t\t\t\t\t%s\n", namaKategori, indeksKategori, barangName, indeksBarang, stokUpdate);
+                                                                        validStok = true;
+                                                                        validBarang = true;
+                                                                        validKategori = true;
+                                                                    } else {
+                                                                        String stokUpdate = String.valueOf(sumStok(transaksi, barangName)); // Mengambil hasil stok paling update
+                                                                        // Bila hasil pengurangan adalah bilangan negatif, maka pengguna diminta untuk memasukkan angka lebih kecil
+                                                                        System.out.println("Maaf, barang tidak bisa dikurangkan dengan " + minusStock + " karena sisa stok di gudang hanya " + stokUpdate + ". Silahkan coba angka yang lebih kecil.");
+                                                                        validStok = false;
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
                                                         }
-                                                        break;
+
                                                     }
                                                 }
+                                            } else {
+                                                System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                                validStok = false;
                                             }
-
+                                        } else {
+                                            System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                            validStok = false;
                                         }
                                     }
-                                } else {
-                                    System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali");
-                                    validStok = false;
                                 }
                             } else {
-                                System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali");
-                                validStok = false;
+                                System.out.println("Maaf! Barang di kategori ini tidak ada. Silahkan inputkan kembali dengan barang yang ada. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                validBarang = false;
                             }
                         }
-                    } else {
-                        System.out.println("Maaf! Barang di kategori ini tidak ada. Silahkan inputkan kembali dengan barang yang ada.");
-                        validBarang = false;
                     }
+                } else {
+                    System.out.println("Maaf! Kategori tidak ada. Silahkan inputkan kembali dengan kategori yang sudah ada. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                    validKategori = false;
                 }
-            } else {
-                System.out.println("Maaf! Kategori tidak ada. Silahkan inputkan kembali dengan kategori yang sudah ada.");
-                validKategori = false;
             }
         }
     }
@@ -608,81 +641,96 @@ public class ManajemenSum {
         while (!validKategori) {
             System.out.print("Silahkan inputkan kategori barang yang ingin dirubah : ");
             String kategoriBaru = scanner.nextLine();
-            boolean categoryExists = categoryExisting(gudang, kategoriBaru);
-            // Jika kategori ada, maka akan melanjutkan perintah selanjutnya
-            if (categoryExists) {
-                boolean validBarang = false;
-                while (!validBarang) {
-                    System.out.print("Silahkan inputkan nama barang yang diinginkan : ");
-                    String tambahNamaBarang = scanner.nextLine();
-                    // Cek bila barang sudah ada atau belum
-                    boolean itemExists = false;
-                    for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                        for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                            String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
-                            String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                            if (categoryName.equalsIgnoreCase(kategoriBaru)) {
-                                if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
-                                    itemExists = true;
-                                    break;
+            if (kategoriBaru.equalsIgnoreCase("keluar")) {
+                break;
+            } else {
+                boolean categoryExists = categoryExisting(gudang, kategoriBaru);
+                // Jika kategori ada, maka akan melanjutkan perintah selanjutnya
+                if (categoryExists) {
+                    boolean validBarang = false;
+                    while (!validBarang) {
+                        System.out.print("Silahkan inputkan nama barang yang diinginkan : ");
+                        String tambahNamaBarang = scanner.nextLine();
+                        if (tambahNamaBarang.equalsIgnoreCase("keluar")) {
+                            validKategori = true;
+                            break;
+                        } else {
+                            // Cek bila barang sudah ada atau belum
+                            boolean itemExists = false;
+                            for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                    String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
+                                    String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                    if (categoryName.equalsIgnoreCase(kategoriBaru)) {
+                                        if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
+                                            itemExists = true;
+                                            break;
+                                        }
+                                    } else {
+                                        validBarang = false;
+                                        break;
+                                    }
                                 }
-                            } else {
-                                validBarang = false;
-                                break;
                             }
-                        }
-                    }
-                    // Jika barang sudah ada, maka program/perintah selanjutnya akan dilanjutkan
-                    if (itemExists) {
-                        boolean validStok = false;
-                        while (!validStok) {
-                            System.out.print("Silahkan inputkan jumlah stok yang ingin ditambah : ");
-                            String tambahStok = scanner.nextLine();
-                            // Input stok harus berupa angka
-                            if (tambahStok.matches("^[0-9]+$")) {
-                                int additionalStock = Integer.parseInt(tambahStok);
-                                if ((additionalStock > 0)) { // Input stok harus berupa bilangan positif
-                                    for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                                        for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                                            String namaKategori = gudang.get(indeksKategori).get(indeksBarang).get(0);
-                                            String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                                            for (int indeksStok = 0; indeksStok < transaksi.size(); indeksStok++) {
-                                                if (transaksi.get(indeksStok).get(0).equalsIgnoreCase(barangName)) {
-                                                    if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
-                                                        String elemenTambah = "++" + tambahStok;
-                                                        transaksi.add(tambahStok(barangName, elemenTambah));
-                                                        transaksi.add(tambahStok(barangName, tambahStok));
-                                                        String stokUpdate = String.valueOf(sumStok(transaksi, barangName));
-                                                        System.out.println("==================================================================================================================================");
-                                                        System.out.println("Selamat! Anda berhasil menambahkan stok barang! Berikut update datanya : ");
-                                                        System.out.println("Kategori\t\t\t\tNama Barang\t\t\t\t\t\t\t\t\t\tStok");
-                                                        System.out.printf("%s - %d\t\t\t\t%s - %d\t\t\t\t\t\t\t\t\t%s\n", namaKategori, indeksKategori, barangName, indeksBarang, stokUpdate);
-                                                        validStok = true;
-                                                        validBarang = true;
-                                                        validKategori = true;
-                                                        break;
+                            // Jika barang sudah ada, maka program/perintah selanjutnya akan dilanjutkan
+                            if (itemExists) {
+                                boolean validStok = false;
+                                while (!validStok) {
+                                    System.out.print("Silahkan inputkan jumlah stok yang ingin ditambah : ");
+                                    String tambahStok = scanner.nextLine();
+                                    if (!tambahStok.equalsIgnoreCase("keluar")) {
+                                        // Input stok harus berupa angka
+                                        if (tambahStok.matches("^[0-9]+$")) {
+                                            int additionalStock = Integer.parseInt(tambahStok);
+                                            if ((additionalStock > 0)) { // Input stok harus berupa bilangan positif
+                                                for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                                    for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                                        String namaKategori = gudang.get(indeksKategori).get(indeksBarang).get(0);
+                                                        String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                                        for (int indeksStok = 0; indeksStok < transaksi.size(); indeksStok++) {
+                                                            if (transaksi.get(indeksStok).get(0).equalsIgnoreCase(barangName)) {
+                                                                if (barangName != null && barangName.equalsIgnoreCase(tambahNamaBarang)) {
+                                                                    String elemenTambah = "++" + tambahStok;
+                                                                    transaksi.add(tambahStok(barangName, elemenTambah));
+                                                                    transaksi.add(tambahStok(barangName, tambahStok));
+                                                                    String stokUpdate = String.valueOf(sumStok(transaksi, barangName));
+                                                                    System.out.println("==================================================================================================================================");
+                                                                    System.out.println("Selamat! Anda berhasil menambahkan stok barang! Berikut update datanya : ");
+                                                                    System.out.println("Kategori\t\t\t\tNama Barang\t\t\t\t\t\t\t\t\t\tStok");
+                                                                    System.out.printf("%s - %d\t\t\t\t%s - %d\t\t\t\t\t\t\t\t\t%s\n", namaKategori, indeksKategori, barangName, indeksBarang, stokUpdate);
+                                                                    validStok = true;
+                                                                    validBarang = true;
+                                                                    validKategori = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
+                                            } else {
+                                                System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                                validStok = false;
                                             }
+                                        } else {
+                                            System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                            validStok = false;
                                         }
+                                    } else {
+                                        validBarang = true;
+                                        validKategori = true;
+                                        break;
                                     }
-                                } else {
-                                    System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali.");
-                                    validStok = false;
                                 }
                             } else {
-                                System.out.println("Maaf! Input stok harus berupa angka dan merupakan bilangan positif! Silahkan inputkan kembali.");
-                                validStok = false;
+                                System.out.println("Maaf! Barang di kategori ini tidak ada. Silahkan inputkan kembali dengan barang yang ada. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                validBarang = false;
                             }
                         }
-                    } else {
-                        System.out.println("Maaf! Barang di kategori ini tidak ada. Silahkan inputkan kembali dengan barang yang ada.");
-                        validBarang = false;
                     }
+                } else {
+                    System.out.println("Maaf! Kategori tidak ada. Silahkan inputkan kembali dengan kategori yang sudah ada. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                    validKategori = false;
                 }
-            } else {
-                System.out.println("Maaf! Kategori tidak ada. Silahkan inputkan kembali dengan kategori yang sudah ada.");
-                validKategori = false;
             }
         }
     }
@@ -745,72 +793,83 @@ public class ManajemenSum {
                     while (!validBarang) {
                         System.out.print("Silahkan inputkan nama barang yang ingin diubah : ");
                         String barangLama = scanner.nextLine();
-                        // FUngsinya untuk mengecek apakah nama barang yang diinputkan pengguna tersedia di database?
-                        boolean itemExists = false;
-                        for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                            for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                                String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
-                                String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                                if (categoryName.equalsIgnoreCase(kategoriBaru)) {
-                                    if (barangName != null && barangName.equalsIgnoreCase(barangLama)) {
-                                        itemExists = true;
-                                        break;
-                                    }
-                                } else {
-                                    validBarang = false;
-                                    break;
-                                }
-                            }
-                        }
-                        // Bila barang lama sudah ada, maka pengguna diminta untuk input nama barang baru
-                        if (itemExists) {
-                            boolean validBarangBaru = false;
-                            while (!validBarangBaru) {
-                                System.out.print("Silahkan inputkan nama barang yang baru : ");
-                                String barangBaru= scanner.nextLine();
-                                // Fungsinya untuk mengecek apakah inputan barang baru sudah ada di database atau belum
-                                boolean barangBaruExists = false;
-                                for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                                    for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                                        String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                                        if (barangName != null && barangName.equalsIgnoreCase(barangBaru)) {
-                                            barangBaruExists = true;
+                        if (barangLama.equalsIgnoreCase("keluar")) {
+                            validKategori = true;
+                            break;
+                        } else {
+                            // FUngsinya untuk mengecek apakah nama barang yang diinputkan pengguna tersedia di database?
+                            boolean itemExists = false;
+                            for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                    String categoryName = gudang.get(indeksKategori).get(indeksBarang).get(0);
+                                    String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                    if (categoryName.equalsIgnoreCase(kategoriBaru)) {
+                                        if (barangName != null && barangName.equalsIgnoreCase(barangLama)) {
+                                            itemExists = true;
                                             break;
                                         }
+                                    } else {
+                                        validBarang = false;
+                                        break;
                                     }
                                 }
+                            }
+                            // Bila barang lama sudah ada, maka pengguna diminta untuk input nama barang baru
+                            if (itemExists) {
+                                boolean validBarangBaru = false;
+                                while (!validBarangBaru) {
+                                    System.out.print("Silahkan inputkan nama barang yang baru : ");
+                                    String barangBaru= scanner.nextLine();
+                                    if (barangBaru.equalsIgnoreCase("keluar")) {
+                                        validBarang = true;
+                                        validKategori = true;
+                                        break;
+                                    } else {
+                                        // Fungsinya untuk mengecek apakah inputan barang baru sudah ada di database atau belum
+                                        boolean barangBaruExists = false;
+                                        for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                            for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                                String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                                if (barangName != null && barangName.equalsIgnoreCase(barangBaru)) {
+                                                    barangBaruExists = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
 
-                                for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
-                                    for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
-                                        String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
-                                        // Jika nama barang sudah ada, maka pengguna diminta untuk input kan kembali nama barang
-                                        if (barangName != null && barangName.equalsIgnoreCase(barangLama)) {
-                                            if (barangBaruExists) {
-                                                System.out.println("Maaf, nama barang sudah ada. Silahkan buat yang baru.");
-                                                validBarangBaru = false;
-                                            } else {
-                                                // Jika nama barang sudah sesuai, maka nama baru akan diganti menggunakan fungsi set
-                                                gudang.get(indeksKategori).get(indeksBarang).set(1, barangBaru);
-                                                for (int indeksTransaksi = 0; indeksTransaksi < transaksi.size(); indeksTransaksi++) {
-                                                    if (transaksi.get(indeksTransaksi).get(0).equalsIgnoreCase(barangName)) {
-                                                        transaksi.get(indeksTransaksi).set(0, barangBaru);
+                                        for (int indeksKategori = 0; indeksKategori < gudang.size(); indeksKategori++) {
+                                            for (int indeksBarang = 0; indeksBarang < gudang.get(indeksKategori).size(); indeksBarang++) {
+                                                String barangName = gudang.get(indeksKategori).get(indeksBarang).get(1);
+                                                // Jika nama barang sudah ada, maka pengguna diminta untuk input kan kembali nama barang
+                                                if (barangName != null && barangName.equalsIgnoreCase(barangLama)) {
+                                                    if (barangBaruExists) {
+                                                        System.out.println("Maaf, nama barang sudah ada. Silahkan buat yang baru. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
+                                                        validBarangBaru = false;
+                                                    } else {
+                                                        // Jika nama barang sudah sesuai, maka nama baru akan diganti menggunakan fungsi set
+                                                        gudang.get(indeksKategori).get(indeksBarang).set(1, barangBaru);
+                                                        for (int indeksTransaksi = 0; indeksTransaksi < transaksi.size(); indeksTransaksi++) {
+                                                            if (transaksi.get(indeksTransaksi).get(0).equalsIgnoreCase(barangName)) {
+                                                                transaksi.get(indeksTransaksi).set(0, barangBaru);
+                                                            }
+                                                        }
+                                                        System.out.println("==================================================================================================================================");
+                                                        System.out.println("Selamat! Anda berhasil merubah barang " + barangLama + " menjadi barang " + barangBaru + ". Berikut update datanya : ");
+                                                        lihatStokBarang(gudang, transaksi);
+                                                        validBarang = true;
+                                                        validBarangBaru = true;
+                                                        validKategori = true;
+                                                        break;
                                                     }
                                                 }
-                                                System.out.println("==================================================================================================================================");
-                                                System.out.println("Selamat! Anda berhasil merubah barang " + barangLama + " menjadi barang " + barangBaru + ". Berikut update datanya : ");
-                                                lihatStokBarang(gudang, transaksi);
-                                                validBarang = true;
-                                                validBarangBaru = true;
-                                                validKategori = true;
-                                                break;
                                             }
                                         }
                                     }
                                 }
+                            } else {
+                                // Menampilkan pesan kesalahan jika barang sudah ada
+                                System.out.println("Mohon maaf, barang di kategori tersebut tidak ada. Silahkan inputkan barang yang sudah ada. Jika ingin kembali ke menu, silahkan ketikkan `keluar`.");
                             }
-                        } else {
-                            // Menampilkan pesan kesalahan jika barang sudah ada
-                            System.out.println("Mohon maaf, barang di kategori tersebut tidak ada. Silahkan inputkan barang yang sudah ada.");
                         }
                     }
                 }
